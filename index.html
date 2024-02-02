@@ -1,30 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-      crossorigin="anonymous"
-    />
-    <!-- bootstrap icon  -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css"
-    />
 
-    <title>Solar API Interface-app</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+  <!-- bootstrap icon  -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" />
 
-  <body>
-    <div class="container">
-      <div class="row">
-        <!-- first side  -->
-        <div class="col-lg-6">
-          <!-- <iframe
+  <title>Solar API Interface-app</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <!-- first side  -->
+      <div class="col-lg-6">
+        <!-- <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3323.4000642791793!2d73.05314057655343!3d33.59492284173832!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38dfef254eedb0c5%3A0x3d0e59b68d3156c2!2sMobisell%20PK!5e0!3m2!1sen!2s!4v1706854797575!5m2!1sen!2s"
             width="160%"
             height="100%"
@@ -33,294 +27,204 @@
             loading="lazy"
             referrerpolicy="no-referrer-when-downgrade"
           ></iframe> -->
-          <!-- Building insight right Paper -->
-          <div class="row">
-            <div class="col-lg-6">
-              <!-- build first box -->
-              <div class="right-build-box px-2 mt-2">
-                <div class="text-center">
-                  <svg
-                    width="25px"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    class="me-1"
-                  >
-                    <title>home-outline</title>
-                    <path
-                      d="M12 5.69L17 10.19V18H15V12H9V18H7V10.19L12 5.69M12 3L2 12H5V20H11V14H13V20H19V12H22"
-                    />
-                  </svg>
-                  <span> Building Insights endpoint </span>
-                  <div class="d-flex justify-content-center">
-                    <hr width="80%" />
-                  </div>
-                </div>
-                <div class="row right-info-row">
-                  <div class="col-lg-6">
-                    <b class="fw-bold">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                      >
-                        <title>brightness-5</title>
-                        <path
-                          d="M12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,15.31L23.31,12L20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31Z"
-                        />
-                      </svg>
-                      Annual Sunshine</b
-                    >
-                  </div>
-                  <div class="col-lg-6 text-end pe-2">1802 hr</div>
-                </div>
-                <div class="row right-info-row mt-2">
-                  <div class="col-lg-6">
-                    <b class="fw-bold">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                      >
-                        <title>set-square</title>
-                        <path
-                          d="M17.7 17.7L16.6 18.8L15.9 18L17 17L15 15L14 16.1L13.3 15.4L14.4 14.3L12.5 12.4L11.4 13.5L10.7 12.8L11.8 11.7L9.8 9.8L8.7 10.9L8 10.2L9 9L7.1 7.1L6 8.1L5.3 7.4L6.4 6.3L4 4V20H20L17.7 17.7M7 17V11.2L12.8 17H7Z"
-                        />
-                      </svg>
-                      Roof Area</b
-                    >
-                  </div>
-                  <div class="col-lg-6 text-end pe-2">1802 hr</div>
-                </div>
-                <div class="row right-info-row mt-2">
-                  <div class="col-lg-6">
-                    <b class="fw-bold">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                      >
-                        <title>solar-power-variant-outline</title>
-                        <path
-                          d="M20 12H4L2 22H22L20 12M18.36 14L18.76 16H13V14H18.36M11 14V16H5.24L5.64 14H11M4.84 18H11V20H4.44L4.84 18M13 20V18H19.16L19.56 20H13M11 8H13V11H11V8M15.76 7.21L17.18 5.79L19.3 7.91L17.89 9.33L15.76 7.21M4.71 7.91L6.83 5.79L8.24 7.21L6.12 9.33L4.71 7.91M3 2H6V4H3V2M18 2H21V4H18V2M12 7C14.76 7 17 4.76 17 2H15C15 3.65 13.65 5 12 5S9 3.65 9 2H7C7 4.76 9.24 7 12 7Z"
-                        />
-                      </svg>
-                      Max Panel Count</b
-                    >
-                  </div>
-                  <div class="col-lg-6 text-end pe-2">1802 hr</div>
-                </div>
-                <div class="row right-info-row mt-2">
-                  <div class="col-lg-6">
-                    <b class="fw-bold">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                      >
-                        <title>molecule-co2</title>
-                        <path
-                          d="M5,7A2,2 0 0,0 3,9V15A2,2 0 0,0 5,17H8V15H5V9H8V7H5M11,7A2,2 0 0,0 9,9V15A2,2 0 0,0 11,17H13A2,2 0 0,0 15,15V9A2,2 0 0,0 13,7H11M11,9H13V15H11V9M16,10.5V12H19V13.5H17.5A1.5,1.5 0 0,0 16,15V18H20.5V16.5H17.5V15H19A1.5,1.5 0 0,0 20.5,13.5V12A1.5,1.5 0 0,0 19,10.5H16Z"
-                        />
-                      </svg>
-                      CO₂ savings</b
-                    >
-                  </div>
-                  <div class="col-lg-6 text-end pe-2">1802 hr</div>
+        <!-- Building insight right Paper -->
+        <div class="row">
+          <div id="map" class="col-lg-6">
+            <!-- build first box -->
+            <div class="right-build-box px-2 mt-2">
+              <div class="text-center">
+                <svg width="25px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="me-1">
+                  <title>home-outline</title>
+                  <path d="M12 5.69L17 10.19V18H15V12H9V18H7V10.19L12 5.69M12 3L2 12H5V20H11V14H13V20H19V12H22" />
+                </svg>
+                <span> Building Insights endpoint </span>
+                <div class="d-flex justify-content-center">
+                  <hr width="80%" />
                 </div>
               </div>
-              <!-- build second box -->
-              <div class="right-build-box px-2 mt-2">
-                <div class="row">
-                  <!-- second section first col -->
-                  <div class="col-lg-6 text-center">
-                    <p>Panel Count</p>
-                    <div class="vr"></div>
-                    <div>
-                      <svg
-                        width="25px"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                      >
-                        <title>solar-power-variant-outline</title>
-                        <path
-                          d="M20 12H4L2 22H22L20 12M18.36 14L18.76 16H13V14H18.36M11 14V16H5.24L5.64 14H11M4.84 18H11V20H4.44L4.84 18M13 20V18H19.16L19.56 20H13M11 8H13V11H11V8M15.76 7.21L17.18 5.79L19.3 7.91L17.89 9.33L15.76 7.21M4.71 7.91L6.83 5.79L8.24 7.21L6.12 9.33L4.71 7.91M3 2H6V4H3V2M18 2H21V4H18V2M12 7C14.76 7 17 4.76 17 2H15C15 3.65 13.65 5 12 5S9 3.65 9 2H7C7 4.76 9.24 7 12 7Z"
-                        />
-                      </svg>
-                      <p class="mt-4" style="font-size: 14px">
-                        <b class="color-purple">10 </b> / 10454
-                      </p>
-                    </div>
+              <div class="row right-info-row">
+                <div class="col-lg-6">
+                  <b class="fw-bold">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <title>brightness-5</title>
+                      <path
+                        d="M12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,15.31L23.31,12L20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31Z" />
+                    </svg>
+                    Annual Sunshine</b>
+                </div>
+                <div class="col-lg-6 text-end pe-2">1802 hr</div>
+              </div>
+              <div class="row right-info-row mt-2">
+                <div class="col-lg-6">
+                  <b class="fw-bold">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <title>set-square</title>
+                      <path
+                        d="M17.7 17.7L16.6 18.8L15.9 18L17 17L15 15L14 16.1L13.3 15.4L14.4 14.3L12.5 12.4L11.4 13.5L10.7 12.8L11.8 11.7L9.8 9.8L8.7 10.9L8 10.2L9 9L7.1 7.1L6 8.1L5.3 7.4L6.4 6.3L4 4V20H20L17.7 17.7M7 17V11.2L12.8 17H7Z" />
+                    </svg>
+                    Roof Area</b>
+                </div>
+                <div class="col-lg-6 text-end pe-2">1802 hr</div>
+              </div>
+              <div class="row right-info-row mt-2">
+                <div class="col-lg-6">
+                  <b class="fw-bold">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <title>solar-power-variant-outline</title>
+                      <path
+                        d="M20 12H4L2 22H22L20 12M18.36 14L18.76 16H13V14H18.36M11 14V16H5.24L5.64 14H11M4.84 18H11V20H4.44L4.84 18M13 20V18H19.16L19.56 20H13M11 8H13V11H11V8M15.76 7.21L17.18 5.79L19.3 7.91L17.89 9.33L15.76 7.21M4.71 7.91L6.83 5.79L8.24 7.21L6.12 9.33L4.71 7.91M3 2H6V4H3V2M18 2H21V4H18V2M12 7C14.76 7 17 4.76 17 2H15C15 3.65 13.65 5 12 5S9 3.65 9 2H7C7 4.76 9.24 7 12 7Z" />
+                    </svg>
+                    Max Panel Count</b>
+                </div>
+                <div class="col-lg-6 text-end pe-2">1802 hr</div>
+              </div>
+              <div class="row right-info-row mt-2">
+                <div class="col-lg-6">
+                  <b class="fw-bold">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <title>molecule-co2</title>
+                      <path
+                        d="M5,7A2,2 0 0,0 3,9V15A2,2 0 0,0 5,17H8V15H5V9H8V7H5M11,7A2,2 0 0,0 9,9V15A2,2 0 0,0 11,17H13A2,2 0 0,0 15,15V9A2,2 0 0,0 13,7H11M11,9H13V15H11V9M16,10.5V12H19V13.5H17.5A1.5,1.5 0 0,0 16,15V18H20.5V16.5H17.5V15H19A1.5,1.5 0 0,0 20.5,13.5V12A1.5,1.5 0 0,0 19,10.5H16Z" />
+                    </svg>
+                    CO₂ savings</b>
+                </div>
+                <div class="col-lg-6 text-end pe-2">1802 hr</div>
+              </div>
+            </div>
+            <!-- build second box -->
+            <div class="right-build-box px-2 mt-2">
+              <div class="row">
+                <!-- second section first col -->
+                <div class="col-lg-6 text-center">
+                  <p>Panel Count</p>
+                  <div class="vr"></div>
+                  <div>
+                    <svg width="25px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <title>solar-power-variant-outline</title>
+                      <path
+                        d="M20 12H4L2 22H22L20 12M18.36 14L18.76 16H13V14H18.36M11 14V16H5.24L5.64 14H11M4.84 18H11V20H4.44L4.84 18M13 20V18H19.16L19.56 20H13M11 8H13V11H11V8M15.76 7.21L17.18 5.79L19.3 7.91L17.89 9.33L15.76 7.21M4.71 7.91L6.83 5.79L8.24 7.21L6.12 9.33L4.71 7.91M3 2H6V4H3V2M18 2H21V4H18V2M12 7C14.76 7 17 4.76 17 2H15C15 3.65 13.65 5 12 5S9 3.65 9 2H7C7 4.76 9.24 7 12 7Z" />
+                    </svg>
+                    <p class="mt-4" style="font-size: 14px">
+                      <b class="color-purple">10 </b> / 10454
+                    </p>
                   </div>
-                  <!-- second section second col -->
-                  <div class="col-lg-6 text-center">
-                    <p>Yearly Energy</p>
-                    <div class="vr"></div>
-                    <div>
-                      <svg
-                        width="25px"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                      >
-                        <title>solar-power-variant-outline</title>
-                        <path
-                          d="M20 12H4L2 22H22L20 12M18.36 14L18.76 16H13V14H18.36M11 14V16H5.24L5.64 14H11M4.84 18H11V20H4.44L4.84 18M13 20V18H19.16L19.56 20H13M11 8H13V11H11V8M15.76 7.21L17.18 5.79L19.3 7.91L17.89 9.33L15.76 7.21M4.71 7.91L6.83 5.79L8.24 7.21L6.12 9.33L4.71 7.91M3 2H6V4H3V2M18 2H21V4H18V2M12 7C14.76 7 17 4.76 17 2H15C15 3.65 13.65 5 12 5S9 3.65 9 2H7C7 4.76 9.24 7 12 7Z"
-                        />
-                      </svg>
-                      <p class="mt-4" style="font-size: 14px">
-                        <b class="color-purple">10454 </b>KWh
-                      </p>
-                    </div>
+                </div>
+                <!-- second section second col -->
+                <div class="col-lg-6 text-center">
+                  <p>Yearly Energy</p>
+                  <div class="vr"></div>
+                  <div>
+                    <svg width="25px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <title>solar-power-variant-outline</title>
+                      <path
+                        d="M20 12H4L2 22H22L20 12M18.36 14L18.76 16H13V14H18.36M11 14V16H5.24L5.64 14H11M4.84 18H11V20H4.44L4.84 18M13 20V18H19.16L19.56 20H13M11 8H13V11H11V8M15.76 7.21L17.18 5.79L19.3 7.91L17.89 9.33L15.76 7.21M4.71 7.91L6.83 5.79L8.24 7.21L6.12 9.33L4.71 7.91M3 2H6V4H3V2M18 2H21V4H18V2M12 7C14.76 7 17 4.76 17 2H15C15 3.65 13.65 5 12 5S9 3.65 9 2H7C7 4.76 9.24 7 12 7Z" />
+                    </svg>
+                    <p class="mt-4" style="font-size: 14px">
+                      <b class="color-purple">10454 </b>KWh
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Side bar  -->
-        <div class="col-lg-6 d-flex justify-content-end">
-          <aside class="sidebar">
-            <!-- seacrh bar  -->
-            <div class="search-area">
-              <div class="has-search">
-                <i class="bi bi-search ms-2"></i>
-                <input type="text" class="form-control" placeholder="Search" />
-              </div>
+      <!-- Side bar  -->
+      <div class="col-lg-6 d-flex justify-content-end">
+        <aside class="sidebar">
+          <!-- seacrh bar  -->
+          <div class="search-area">
+            <div class="has-search">
+              <i class="bi bi-search ms-2"></i>
+              <input type="text" id="search-input" class="form-control" placeholder="Search" />
+              <!-- <input id="autoplace-input"></input> -->
             </div>
-            <!-- text box -->
-            <div class="distinct mt-4 p-3">
-              <p>
-                <a
-                  class="two-dis-link"
-                  target="_blank"
-                  href="https://developers.google.com/maps/documentation/solar/overview?hl=en"
-                  >Two distinct endpoints of the
-                  <b class="fw-bold">Solar API</b>
-                  <svg
-                    width="15"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                  >
-                    <title>open-in-new</title>
-                    <path
-                      d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"
-                    />
+          </div>
+          <!-- text box -->
+          <div class="distinct mt-4 p-3">
+            <p>
+              <a class="two-dis-link" target="_blank"
+                href="https://developers.google.com/maps/documentation/solar/overview?hl=en">Two distinct endpoints of
+                the
+                <b class="fw-bold">Solar API</b>
+                <svg width="15" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <title>open-in-new</title>
+                  <path
+                    d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z" />
+                </svg>
+              </a>
+              offer many benefits to solar marketplace websites, solar
+              installers, and solar SaaS designers.
+            </p>
+            <p class="pe-2">
+              <b class="fw-bold">Click on an area below</b> to see what type
+              of information the Solar API can provide.
+            </p>
+          </div>
+          <!-- Accordion -->
+          <div class="accordion accordion-flush mt-3" id="accordionFlushExample">
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                  <svg width="25px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="me-1">
+                    <title>home-outline</title>
+                    <path d="M12 5.69L17 10.19V18H15V12H9V18H7V10.19L12 5.69M12 3L2 12H5V20H11V14H13V20H19V12H22" />
                   </svg>
-                </a>
-                offer many benefits to solar marketplace websites, solar
-                installers, and solar SaaS designers.
-              </p>
-              <p class="pe-2">
-                <b class="fw-bold">Click on an area below</b> to see what type
-                of information the Solar API can provide.
-              </p>
-            </div>
-            <!-- Accordion -->
-            <div
-              class="accordion accordion-flush mt-3"
-              id="accordionFlushExample"
-            >
-              <div class="accordion-item">
-                <h2 class="accordion-header">
-                  <button
-                    class="accordion-button collapsed"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#flush-collapseOne"
-                    aria-expanded="false"
-                    aria-controls="flush-collapseOne"
-                  >
-                    <svg
-                      width="25px"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      class="me-1"
-                    >
-                      <title>home-outline</title>
-                      <path
-                        d="M12 5.69L17 10.19V18H15V12H9V18H7V10.19L12 5.69M12 3L2 12H5V20H11V14H13V20H19V12H22"
-                      />
-                    </svg>
-                    Building Insights Endpoint <br />
-                  </button>
-                  <p
-                    class="accordion-sub-heading"
-                    style="position: relative; top: -7px"
-                  >
-                    Yearly energy: 14.00 mWh
+                  Building Insights Endpoint <br />
+                </button>
+                <p class="accordion-sub-heading" style="position: relative; top: -7px">
+                  Yearly energy: 14.00 mWh
+                </p>
+              </h2>
+              <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                  <p class="building-para">
+                    <b class="fw-bold"> Building Insights endpoint</b>
+                    provides data on the location, dimensions & solar
+                    potential of a building.
                   </p>
-                </h2>
-                <div
-                  id="flush-collapseOne"
-                  class="accordion-collapse collapse"
-                  data-bs-parent="#accordionFlushExample"
-                >
-                  <div class="accordion-body">
-                    <p class="building-para">
-                      <b class="fw-bold"> Building Insights endpoint</b>
-                      provides data on the location, dimensions & solar
-                      potential of a building.
-                    </p>
-                    <div class="row">
-                      <div class="col-lg-2">
-                        <svg
-                          width="25px"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                        >
-                          <title>solar-power-variant-outline</title>
-                          <path
-                            d="M20 12H4L2 22H22L20 12M18.36 14L18.76 16H13V14H18.36M11 14V16H5.24L5.64 14H11M4.84 18H11V20H4.44L4.84 18M13 20V18H19.16L19.56 20H13M11 8H13V11H11V8M15.76 7.21L17.18 5.79L19.3 7.91L17.89 9.33L15.76 7.21M4.71 7.91L6.83 5.79L8.24 7.21L6.12 9.33L4.71 7.91M3 2H6V4H3V2M18 2H21V4H18V2M12 7C14.76 7 17 4.76 17 2H15C15 3.65 13.65 5 12 5S9 3.65 9 2H7C7 4.76 9.24 7 12 7Z"
-                          />
-                        </svg>
+                  <div class="row">
+                    <div class="col-lg-2">
+                      <svg width="25px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <title>solar-power-variant-outline</title>
+                        <path
+                          d="M20 12H4L2 22H22L20 12M18.36 14L18.76 16H13V14H18.36M11 14V16H5.24L5.64 14H11M4.84 18H11V20H4.44L4.84 18M13 20V18H19.16L19.56 20H13M11 8H13V11H11V8M15.76 7.21L17.18 5.79L19.3 7.91L17.89 9.33L15.76 7.21M4.71 7.91L6.83 5.79L8.24 7.21L6.12 9.33L4.71 7.91M3 2H6V4H3V2M18 2H21V4H18V2M12 7C14.76 7 17 4.76 17 2H15C15 3.65 13.65 5 12 5S9 3.65 9 2H7C7 4.76 9.24 7 12 7Z" />
+                      </svg>
+                    </div>
+                    <div class="col-lg-4 fw-bold" style="color: #6260a3">
+                      Panels Count
+                    </div>
+                    <div class="col-lg-5 text-end">68 Panels</div>
+                    <!-- Range input  -->
+                    <div class="ms-2">
+                      <input type="range" min="1" max="100" value="50" class="slider" id="myRange" />
+                    </div>
+                    <!-- Number Input -->
+                    <form>
+                      <div class="omrs-input-group">
+                        <label class="omrs-input-filled">
+                          <input type="number" required />
+                          <span class="omrs-input-label">Panel Capacity</span>
+                          <p style="margin-top: -42px; margin-left: 3px">
+                            <i class="bi bi-lightning" style="font-size: 25px"></i>
+                          </p>
+                        </label>
                       </div>
-                      <div class="col-lg-4 fw-bold" style="color: #6260a3">
-                        Panels Count
-                      </div>
-                      <div class="col-lg-5 text-end">68 Panels</div>
-                      <!-- Range input  -->
-                      <div class="ms-2">
-                        <input
-                          type="range"
-                          min="1"
-                          max="100"
-                          value="50"
-                          class="slider"
-                          id="myRange"
-                        />
-                      </div>
-                      <!-- Number Input -->
-                      <form>
-                        <div class="omrs-input-group">
-                          <label class="omrs-input-filled">
-                            <input type="number" required />
-                            <span class="omrs-input-label">Panel Capacity</span>
-                            <p style="margin-top: -42px; margin-left: 3px">
-                              <i
-                                class="bi bi-lightning"
-                                style="font-size: 25px"
-                              ></i>
-                            </p>
-                          </label>
-                        </div>
-                      </form>
-                      <!-- switch  input-->
-                      <div class="form-check form-switch ms-3">
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          role="switch"
-                          id="flexSwitchCheckChecked"
-                          checked
-                        />
-                        <label
-                          class="form-check-label ms-2"
-                          for="flexSwitchCheckChecked"
-                          >Solar Panels</label
-                        >
-                      </div>
+                    </form>
+                    <!-- switch  input-->
+                    <div class="form-check form-switch ms-3">
+                      <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
+                        checked />
+                      <label class="form-check-label ms-2" for="flexSwitchCheckChecked">Solar Panels</label>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
 
-              <!-- <div class="accordion-item">
+            <!-- <div class="accordion-item">
                 <h2 class="accordion-header">
                   <button
                     class="accordion-button collapsed"
@@ -347,188 +251,137 @@
                 </div>
               </div> -->
 
-              <div class="accordion-item">
-                <h2 class="accordion-header">
-                  <button
-                    class="accordion-button collapsed"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#flush-collapseThree"
-                    aria-expanded="false"
-                    aria-controls="flush-collapseThree"
-                  >
-                    <svg
-                      width="25px"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      class="me-1"
-                    >
-                      <title>cash-multiple</title>
-                      <path
-                        d="M5,6H23V18H5V6M14,9A3,3 0 0,1 17,12A3,3 0 0,1 14,15A3,3 0 0,1 11,12A3,3 0 0,1 14,9M9,8A2,2 0 0,1 7,10V14A2,2 0 0,1 9,16H19A2,2 0 0,1 21,14V10A2,2 0 0,1 19,8H9M1,10H3V20H19V22H1V10Z"
-                      />
-                    </svg>
-                    Solar Potential Analysis
-                  </button>
-                  <div style="position: relative; top: -7px">
-                    <p class="accordion-sub-heading">
-                      Values are only placeholders. <br />
-                      Update with your own values.
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                  <svg width="25px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="me-1">
+                    <title>cash-multiple</title>
+                    <path
+                      d="M5,6H23V18H5V6M14,9A3,3 0 0,1 17,12A3,3 0 0,1 14,15A3,3 0 0,1 11,12A3,3 0 0,1 14,9M9,8A2,2 0 0,1 7,10V14A2,2 0 0,1 9,16H19A2,2 0 0,1 21,14V10A2,2 0 0,1 19,8H9M1,10H3V20H19V22H1V10Z" />
+                  </svg>
+                  Solar Potential Analysis
+                </button>
+                <div style="position: relative; top: -7px">
+                  <p class="accordion-sub-heading">
+                    Values are only placeholders. <br />
+                    Update with your own values.
+                  </p>
+                </div>
+              </h2>
+              <div id="flush-collapseThree" class="accordion-collapse collapse show"
+                data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                  <!-- text box  -->
+                  <div class="distinct mt-2 p-3">
+                    <p class="mb-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25">
+                        <title>information-outline</title>
+                        <path fill="#79747E"
+                          d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z" />
+                      </svg>
+                      Projections use a
+                      <a class="two-dis-link" target="_blank"
+                        href="https://developers.google.com/maps/documentation/solar/calculate-costs-us">USA financial
+                        model
+                        <svg width="15" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                          <title>open-in-new</title>
+                          <path
+                            d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z" />
+                        </svg>
+                      </a>
                     </p>
                   </div>
-                </h2>
-                <div
-                  id="flush-collapseThree"
-                  class="accordion-collapse collapse show"
-                  data-bs-parent="#accordionFlushExample"
-                >
-                  <div class="accordion-body">
-                    <!-- text box  -->
-                    <div class="distinct mt-2 p-3">
-                      <p class="mb-0">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          width="25"
-                        >
-                          <title>information-outline</title>
-                          <path
-                            fill="#79747E"
-                            d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"
-                          />
-                        </svg>
-                        Projections use a
-                        <a
-                          class="two-dis-link"
-                          target="_blank"
-                          href="https://developers.google.com/maps/documentation/solar/calculate-costs-us"
-                          >USA financial model
-                          <svg
-                            width="15"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                          >
-                            <title>open-in-new</title>
-                            <path
-                              d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"
-                            />
-                          </svg>
-                        </a>
-                      </p>
+                  <!-- energy cost input  -->
+                  <form class="mt-4">
+                    <div class="omrs-input-group">
+                      <label class="omrs-input-filled">
+                        <input type="number" required />
+                        <span class="omrs-input-label">Energy Cost Per kWh</span>
+                        <p style="margin-top: -42px; margin-left: 2px">
+                          <i class="bi bi-currency-dollar" style="font-size: 25px"></i>
+                          <span style="position: absolute; top: 12px">
+                            <i class="bi bi-currency-dollar" style="font-size: 15px"></i>
+                          </span>
+                        </p>
+                      </label>
                     </div>
-                    <!-- energy cost input  -->
-                    <form class="mt-4">
-                      <div class="omrs-input-group">
-                        <label class="omrs-input-filled">
-                          <input type="number" required />
-                          <span class="omrs-input-label"
-                            >Energy Cost Per kWh</span
-                          >
-                          <p style="margin-top: -42px; margin-left: 2px">
-                            <i
-                              class="bi bi-currency-dollar"
-                              style="font-size: 25px"
-                            ></i>
-                            <span style="position: absolute; top: 12px">
-                              <i
-                                class="bi bi-currency-dollar"
-                                style="font-size: 15px"
-                              ></i>
-                            </span>
-                          </p>
-                        </label>
-                      </div>
-                      <!-- solar incentive  -->
-                      <div class="omrs-input-group mt-3">
-                        <label class="omrs-input-filled">
-                          <input type="number" required />
-                          <span class="omrs-input-label">Solar incentives</span>
-                          <p style="margin-top: -42px; margin-left: 7px">
-                            <i class="bi bi-gift" style="font-size: 20px"></i>
-                            <span style="position: absolute; top: 12px">
-                              <i
-                                class="bi bi-currency-dollar"
-                                style="font-size: 15px"
-                              ></i>
-                            </span>
-                          </p>
-                        </label>
-                      </div>
-                      <!-- installation cost per watt -->
-                      <div class="omrs-input-group mt-3">
-                        <label class="omrs-input-filled">
-                          <input type="number" required />
-                          <span class="omrs-input-label"
-                            >Installation cost per Watt</span
-                          >
-                          <p style="margin-top: -42px; margin-left: 7px">
-                            <i
-                              class="bi bi-textarea"
-                              style="font-size: 20px"
-                            ></i>
-                            <span style="position: absolute; top: 12px">
-                              <i
-                                class="bi bi-currency-dollar"
-                                style="font-size: 15px"
-                              ></i>
-                            </span>
-                          </p>
-                        </label>
-                      </div>
-                      <!-- Panel capacity per watt -->
-                      <div class="omrs-input-group mt-3">
-                        <label class="omrs-input-filled">
-                          <input type="number" required />
-                          <span class="omrs-input-label"
-                            >Panel Capacity per Watt</span
-                          >
-                          <p style="margin-top: -42px; margin-left: 3px">
-                            <i
-                              class="bi bi-lightning"
-                              style="font-size: 25px"
-                            ></i>
-                            <span style="position: absolute; top: 12px">
-                              <i
-                                class="bi bi-currency-dollar"
-                                style="font-size: 15px"
-                              ></i>
-                            </span>
-                          </p>
-                        </label>
-                      </div>
-                    </form>
-                  </div>
+                    <!-- solar incentive  -->
+                    <div class="omrs-input-group mt-3">
+                      <label class="omrs-input-filled">
+                        <input type="number" required />
+                        <span class="omrs-input-label">Solar incentives</span>
+                        <p style="margin-top: -42px; margin-left: 7px">
+                          <i class="bi bi-gift" style="font-size: 20px"></i>
+                          <span style="position: absolute; top: 12px">
+                            <i class="bi bi-currency-dollar" style="font-size: 15px"></i>
+                          </span>
+                        </p>
+                      </label>
+                    </div>
+                    <!-- installation cost per watt -->
+                    <div class="omrs-input-group mt-3">
+                      <label class="omrs-input-filled">
+                        <input type="number" required />
+                        <span class="omrs-input-label">Installation cost per Watt</span>
+                        <p style="margin-top: -42px; margin-left: 7px">
+                          <i class="bi bi-textarea" style="font-size: 20px"></i>
+                          <span style="position: absolute; top: 12px">
+                            <i class="bi bi-currency-dollar" style="font-size: 15px"></i>
+                          </span>
+                        </p>
+                      </label>
+                    </div>
+                    <!-- Panel capacity per watt -->
+                    <div class="omrs-input-group mt-3">
+                      <label class="omrs-input-filled">
+                        <input type="number" required />
+                        <span class="omrs-input-label">Panel Capacity per Watt</span>
+                        <p style="margin-top: -42px; margin-left: 3px">
+                          <i class="bi bi-lightning" style="font-size: 25px"></i>
+                          <span style="position: absolute; top: 12px">
+                            <i class="bi bi-currency-dollar" style="font-size: 15px"></i>
+                          </span>
+                        </p>
+                      </label>
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>
-          </aside>
-        </div>
-        <footer class="footer">
-          <!-- Range input  -->
-          <div class="bg-white pt-2 ps-3 rounded-start">
-            <input
-              type="range"
-              min="1"
-              max="100"
-              value="50"
-              class="slider"
-              id="myRange"
-            />
           </div>
-          <div class="bg-white px-3 pt-2 rounded-end">
-            <p>jan</p>
-          </div>
-        </footer>
+        </aside>
       </div>
+      <footer class="footer">
+        <!-- Range input  -->
+        <div class="bg-white pt-2 ps-3 rounded-start">
+          <input type="range" min="1" max="100" value="50" class="slider" id="myRange" />
+        </div>
+        <div class="bg-white px-3 pt-2 rounded-end">
+          <p>jan</p>
+        </div>
+      </footer>
     </div>
+  </div>
 
-    <!-- ======== Scripts =============== -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-      crossorigin="anonymous"
-    ></script>
-    <script src="script.js"></script>
-  </body>
+  <!-- ======== Scripts =============== -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/geotiff@2.1.1/dist-browser/geotiff.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/geotiff-geokeys-to-proj4@2024.1.14/main-dist.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/proj4@2.10.0/dist/proj4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/googlemaps-js-api-loader/1.16.2/index.min.js"
+    integrity="sha512-i7Ccync/BnU1NNCIrUllJNaqJPGvEp0exup8DM8KyD1m30g0fSyg1mN8aLfCPEBXvn/kdE5869IkK3/EsLyqrQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- <script src="
+      https://cdn.jsdelivr.net/npm/google-maps@4.3.3/lib/cjs/index.min.js
+      "></script> -->
+  <!-- <script async
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDMPvp62rcoIitOkkSlfIAxZzDUgL6dR84&loading=async&libraries=geometry&callback=initMap">
+        </script> -->
+  <script src="script.js"></script>
+</body>
+
 </html>

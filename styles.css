@@ -3,10 +3,21 @@ html {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  background-color: white;
+  background-color: grey;
 }
 .row {
   --bs-gutter-x: none;
+}
+.color-purple {
+  color: #6750a4;
+}
+.vr {
+  font-size: 10px;
+  border: 1px solid #6750a4;
+}
+hr {
+  padding: 10px;
+  border-top: 2px solid #000000;
 }
 .container,
 .container-lg,
@@ -16,6 +27,25 @@ html {
 .container-xxl {
   max-width: 100%;
 }
+/* left side Papers  */
+.right-build-box {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px 0;
+}
+.right-info-row b {
+  color: #625b71;
+}
+.right-info-row .bi,
+.right-info-row svg {
+  color: #6260a3;
+  /* font-size: 18px; */
+  width: 20px;
+}
+svg path {
+  fill: #6260a3;
+}
+/* Right Side Bar  */
 .sidebar {
   width: 420px;
   height: 100vh;

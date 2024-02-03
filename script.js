@@ -523,7 +523,7 @@ function createAccordionSections() {
         try {
           layer = await getLayer(layerId, dataLayersResponse, googleMapsApiKey);
         } catch (e) {
-          console.log('error getting: ', e);
+            console.log('error getting: ', e);
           requestError = e;
           return;
         }
@@ -541,7 +541,8 @@ function createAccordionSections() {
         .render(showRoofOnly, month, day)
         .map(
           canvas => new google.maps.GroundOverlay(canvas.toDataURL(), bounds)
-        );
+      );
+        
 
       if (!['monthlyFlux', 'hourlyShade'].includes(layer.id)) {
         overlays[0].setMap(map);

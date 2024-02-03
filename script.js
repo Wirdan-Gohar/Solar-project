@@ -12,6 +12,14 @@ let mapsLibrary;
 let placesLibrary;
 let geoLocation;
 
+const spinnerHtml = `<div class="d-flex justify-content-center"><div class="spinner-border text-primary" role="status">
+  <span class="sr-only"></span>
+</div></div>`;
+
+let accordionsID = '#accordions';
+let isBuildingAccordionOpen = false;
+let isSolarAccordionOpen = false;
+
 document.addEventListener('DOMContentLoaded', async function () {
   const defaultPlace = {
     name: 'Rinconada Library',
@@ -30,13 +38,13 @@ document.addEventListener('DOMContentLoaded', async function () {
   mapsLibrary = await libraries.maps;
   placesLibrary = await libraries.places;
 
-  // Get the address information for the default location.
+  // Get the address information for the default geoLocation.
   const geocoder = new google.maps.Geocoder();
   const geocoderResponse = await geocoder.geocode({
     address: defaultPlace.address
   });
   const geocoderResult = geocoderResponse.results[0];
-  // Initialize the map at the desired location.
+  // Initialize the map at the desired geoLocation.
   geoLocation = geocoderResult.geometry.location;
   map = new mapsLibrary.Map(document.getElementById('map'), {
     center: geoLocation,
@@ -52,9 +60,535 @@ document.addEventListener('DOMContentLoaded', async function () {
   onSearchChange();
 });
 
-function onSearchChange() {
-  let initialValue = geoLocation;
+// Right Sections Code
 
+function generateSolarPotentialHtml() {
+  return `
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                  <svg width="25px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="me-1">
+                    <title>cash-multiple</title>
+                    <path
+                      d="M5,6H23V18H5V6M14,9A3,3 0 0,1 17,12A3,3 0 0,1 14,15A3,3 0 0,1 11,12A3,3 0 0,1 14,9M9,8A2,2 0 0,1 7,10V14A2,2 0 0,1 9,16H19A2,2 0 0,1 21,14V10A2,2 0 0,1 19,8H9M1,10H3V20H19V22H1V10Z" />
+                  </svg>
+                  Solar Potential Analysis
+                </button>
+                <div style="position: relative; top: -7px">
+                  <p class="accordion-sub-heading">
+                    Values are only placeholders. <br />
+                    Update with your own values.
+                  </p>
+                </div>
+              </h2>
+              <div id="flush-collapseThree" class="accordion-collapse collapse show" data-bs-parent="#accordions">
+                <div class="accordion-body">
+                  <!-- text box  -->
+                  <div class="distinct mt-2 p-3">
+                    <p class="mb-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25">
+                        <title>information-outline</title>
+                        <path fill="#79747E"
+                          d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z" />
+                      </svg>
+                      Projections use a
+                      <a class="two-dis-link" target="_blank"
+                        href="https://developers.google.com/maps/documentation/solar/calculate-costs-us">USA financial
+                        model
+                        <svg width="15" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                          <title>open-in-new</title>
+                          <path
+                            d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z" />
+                        </svg>
+                      </a>
+                    </p>
+                  </div>
+                  <!-- energy cost input  -->
+                  <form class="mt-4">
+                    <div class="omrs-input-group">
+                      <label class="omrs-input-filled">
+                        <input type="number" required />
+                        <span class="omrs-input-label">Energy Cost Per kWh</span>
+                        <p style="margin-top: -42px; margin-left: 2px">
+                          <i class="bi bi-currency-dollar" style="font-size: 25px"></i>
+                          <span style="position: absolute; top: 12px">
+                            <i class="bi bi-currency-dollar" style="font-size: 15px"></i>
+                          </span>
+                        </p>
+                      </label>
+                    </div>
+                    <!-- solar incentive  -->
+                    <div class="omrs-input-group mt-3">
+                      <label class="omrs-input-filled">
+                        <input type="number" required />
+                        <span class="omrs-input-label">Solar incentives</span>
+                        <p style="margin-top: -42px; margin-left: 7px">
+                          <i class="bi bi-gift" style="font-size: 20px"></i>
+                          <span style="position: absolute; top: 12px">
+                            <i class="bi bi-currency-dollar" style="font-size: 15px"></i>
+                          </span>
+                        </p>
+                      </label>
+                    </div>
+                    <!-- installation cost per watt -->
+                    <div class="omrs-input-group mt-3">
+                      <label class="omrs-input-filled">
+                        <input type="number" required />
+                        <span class="omrs-input-label">Installation cost per Watt</span>
+                        <p style="margin-top: -42px; margin-left: 7px">
+                          <i class="bi bi-textarea" style="font-size: 20px"></i>
+                          <span style="position: absolute; top: 12px">
+                            <i class="bi bi-currency-dollar" style="font-size: 15px"></i>
+                          </span>
+                        </p>
+                      </label>
+                    </div>
+                    <!-- Panel capacity per watt -->
+                    <div class="omrs-input-group mt-3">
+                      <label class="omrs-input-filled">
+                        <input type="number" id="panel-capacity-watt" required />
+                        <span class="omrs-input-label">Panel Capacity per Watt</span>
+                        <p style="margin-top: -42px; margin-left: 3px">
+                          <i class="bi bi-lightning" style="font-size: 25px"></i>
+                          <span style="position: absolute; top: 12px">
+                            <i class="bi bi-currency-dollar" style="font-size: 15px"></i>
+                          </span>
+                        </p>
+                      </label>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>`;
+}
+
+function generateBuildingInsightsHtml() {
+  return `<div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                  <svg width="25px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="me-1">
+                    <title>home-outline</title>
+                    <path d="M12 5.69L17 10.19V18H15V12H9V18H7V10.19L12 5.69M12 3L2 12H5V20H11V14H13V20H19V12H22" />
+                  </svg>
+                  Building Insights Endpoint <br />
+                </button>
+                <p class="accordion-sub-heading" style="position: relative; top: -7px">
+                  Yearly energy: <span id="yearly-energy-accordion">0 MWh</span>
+                </p>
+              </h2>
+              <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordions">
+                <div class="accordion-body">
+                  <p class="building-para">
+                    <b class="fw-bold"> Building Insights endpoint</b>
+                    provides data on the location, dimensions & solar
+                    potential of a building.
+                  </p>
+                  <div class="row">
+                    <div class="col-lg-2">
+                      <svg width="25px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <title>solar-power-variant-outline</title>
+                        <path
+                          d="M20 12H4L2 22H22L20 12M18.36 14L18.76 16H13V14H18.36M11 14V16H5.24L5.64 14H11M4.84 18H11V20H4.44L4.84 18M13 20V18H19.16L19.56 20H13M11 8H13V11H11V8M15.76 7.21L17.18 5.79L19.3 7.91L17.89 9.33L15.76 7.21M4.71 7.91L6.83 5.79L8.24 7.21L6.12 9.33L4.71 7.91M3 2H6V4H3V2M18 2H21V4H18V2M12 7C14.76 7 17 4.76 17 2H15C15 3.65 13.65 5 12 5S9 3.65 9 2H7C7 4.76 9.24 7 12 7Z" />
+                      </svg>
+                    </div>
+                    <div class="col-lg-4 fw-bold" style="color: #6260a3">
+                      Panels Count
+                    </div>
+                    <div class="col-lg-5 text-end" id="panel-count">0 Panels</div>
+                    <!-- Range input  -->
+                    <div class="ms-2">
+                      <input type="range" min="1" max="100" value="0" class="slider" id="panels-count-slider" />
+                    </div>
+                    <!-- Number Input -->
+                    <form>
+                      <div class="omrs-input-group">
+                        <label class="omrs-input-filled">
+                          <input type="number" id="panel-capacity" value="250" required />
+                          <span class="omrs-input-label">Panel Capacity</span>
+                          <p style="margin-top: -42px; margin-left: 3px">
+                            <i class="bi bi-lightning" style="font-size: 25px"></i>
+                          </p>
+                        </label>
+                      </div>
+                    </form>
+                    <!-- switch  input-->
+                    <div class="form-check form-switch ms-3">
+                      <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
+                        checked />
+                      <label class="form-check-label ms-2" for="flexSwitchCheckChecked">Solar Panels</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>`;
+}
+
+function createAccordionSections() {
+  let buildingInsights; // Declare buildingInsights variable
+  let expandedSection = '';
+  let showPanels = true;
+  let monthlyAverageEnergyBillInput = 300;
+  let panelCapacityWattsInput = 250;
+  let energyCostPerKwhInput = 0.31;
+  let dcToAcDerateInput = 0.85;
+  let configId; // Declare configId variable
+  let solarPanelConfigs;
+    let defaultPanelCapacityWatts;
+    
+  const html = generateBuildingInsightsHtml() + generateSolarPotentialHtml();
+  $(accordionsID).append(html);
+  let yearlyKwhEnergyConsumption;
+  calculateYearlyKwhEnergyConsumption();
+
+  function calculateYearlyKwhEnergyConsumption() {
+    yearlyKwhEnergyConsumption =
+      (monthlyAverageEnergyBillInput / energyCostPerKwhInput) * 12;
+  }
+
+  solarPanels = [];
+  let requestSent = false;
+  let requestError;
+  let apiResponseDialog;
+
+  function BuildingInsightsSection() {
+    let panelConfig;
+
+    function initializeSolarPanels() {
+      solarPanels.map(panel => panel.setMap(null));
+      solarPanels = [];
+    }
+
+    function updateSolarPanels() {
+      solarPanels.map((panel, i) =>
+        panel.setMap(
+          showPanels && panelConfig && i < panelConfig.panelsCount ? map : null
+        )
+      );
+    }
+
+    let solarPotential;
+    let palette;
+    let minEnergy;
+    let maxEnergy;
+    let defaultPanelCapacity;
+    let panelCapacityRatio;
+
+    async function showSolarPotential() {
+      if (requestSent) {
+        return;
+      }
+
+      buildingInsights = undefined;
+      requestError = undefined;
+
+      initializeSolarPanels();
+      function updateFromBuildingSection() {
+        if (configId === undefined && buildingInsights) {
+          defaultPanelCapacity =
+            buildingInsights.solarPotential.panelCapacityWatts;
+          defaultPanelCapacityWatts = defaultPanelCapacity;
+          solarPanelConfigs = buildingInsights.solarPotential.solarPanelConfigs;
+          panelCapacityRatio = panelCapacityWattsInput / defaultPanelCapacity;
+          configId = findSolarConfig(
+            buildingInsights.solarPotential.solarPanelConfigs,
+            yearlyKwhEnergyConsumption,
+            panelCapacityRatio,
+            dcToAcDerateInput
+          );
+        }
+
+        panelConfig =
+          buildingInsights.solarPotential.solarPanelConfigs[configId];
+        solarPotential = buildingInsights.solarPotential;
+        palette = createPalette(panelsPalette).map(rgbToColor);
+        minEnergy = solarPotential.solarPanels.slice(-1)[0].yearlyEnergyDcKwh;
+        maxEnergy = solarPotential.solarPanels[0].yearlyEnergyDcKwh;
+        solarPanels = solarPotential.solarPanels.map(panel => {
+          const [w, h] = [
+            solarPotential.panelWidthMeters / 2,
+            solarPotential.panelHeightMeters / 2
+          ];
+          const points = [
+            { x: +w, y: +h }, // top right
+            { x: +w, y: -h }, // bottom right
+            { x: -w, y: -h }, // bottom left
+            { x: -w, y: +h }, // top left
+            { x: +w, y: +h } // top right (closing the polygon)
+          ];
+          const orientation = panel.orientation == 'PORTRAIT' ? 90 : 0;
+          const azimuth =
+            solarPotential.roofSegmentStats[panel.segmentIndex].azimuthDegrees;
+          const colorIndex = Math.round(
+            normalize(panel.yearlyEnergyDcKwh, maxEnergy, minEnergy) * 255
+          );
+
+          // Compute the coordinates of each point based on the panel's center, width, height, orientation, and azimuth
+          const polygonCoordinates = points.map(({ x, y }) =>
+            geometryLibrary.spherical.computeOffset(
+              {
+                lat: panel.center.latitude,
+                lng: panel.center.longitude
+              },
+              Math.sqrt(x * x + y * y),
+              Math.atan2(y, x) * (180 / Math.PI) + orientation + azimuth
+            )
+          );
+
+          // Create a new google.maps.Polygon instance with computed coordinates and other properties
+          return new google.maps.Polygon({
+            paths: polygonCoordinates,
+            strokeColor: '#B0BEC5',
+            strokeOpacity: 0.9,
+            strokeWeight: 1,
+            fillColor: palette[colorIndex],
+            fillOpacity: 0.9
+          });
+        });
+      }
+      requestSent = true;
+      try {
+        buildingInsights = await findClosestBuilding(geoLocation);
+
+        updateFromBuildingSection(buildingInsights);
+        updateSolarPanels();
+
+        $('#yearly-energy-accordion').html(
+          `${(
+            (panelConfig?.yearlyEnergyDcKwh || 0 * panelCapacityRatio || 0) /
+            1000
+          ).toFixed(2)} MWh`
+        );
+        $('#panel-count').html(
+          `${buildingInsights.solarPotential.solarPanelConfigs[configId].panelsCount} panels`
+        );
+
+        $('#panels-count-slider').attr({
+          max: buildingInsights.solarPotential.solarPanelConfigs.length - 1,
+          min: 0,
+          value: configId
+        });
+        $('#panels-count-slider').on('input', function (e) {
+          configId = e.target.value ?? 0;
+          showSolarPotential();
+        });
+
+        $('#panel-capacity').on('input', function (e) {
+          const value = e.target.value ?? 0;
+          panelCapacityWattsInput = value;
+          showSolarPotential();
+        });
+        $('#flexSwitchCheckChecked').on('input', function (e) {
+          const value = e.target.checked ?? false;
+          showPanels = value;
+          showSolarPotential();
+        });
+      } catch (e) {
+        console.log('error: ', e);
+        requestError = e;
+        return;
+      } finally {
+        requestSent = false;
+      }
+    }
+
+    showSolarPotential();
+
+    function showErrorContainer() {
+      // Display error container
+    }
+
+    function showProgressIndicator() {
+      // Display progress indicator
+    }
+
+    function showBuildingInsights() {}
+
+    function showExpandable() {
+      // Display expandable section
+    }
+
+    function showSummaryCard() {
+      // Display summary card
+    }
+
+    function showGauge() {
+      // Display gauge
+    }
+
+    function retryRequest() {
+      showSolarPotential();
+    }
+
+    if (requestError) {
+      showErrorContainer();
+    } else if (!buildingInsights) {
+      showProgressIndicator();
+    } else if (configId !== undefined && panelConfig) {
+      showBuildingInsights();
+      showExpandable();
+      if (expandedSection == title) {
+        showSummaryCard();
+        showGauge();
+      }
+    }
+
+    // Implementation of BuildingInsightsSection component
+  }
+
+  function SolarPotentialSection() {
+    const icon = 'payments';
+    const title = 'Solar Potential analysis';
+
+    let costChart;
+    let showAdvancedSettings = false;
+
+    // [START solar_potential_calculations]
+    // Solar configuration, from buildingInsights.solarPotential.solarPanelConfigs
+    let panelsCount = 20;
+    let yearlyEnergyDcKwh = 12000;
+
+    // Basic settings
+    let monthlyAverageEnergyBill = 300;
+    let energyCostPerKwh = 0.31;
+    let panelCapacityWatts = 400;
+    let solarIncentives = 7000;
+    let installationCostPerWatt = 4.0;
+    let installationLifeSpan = 20;
+
+    // Advanced settings
+    let dcToAcDerate = 0.85;
+    let efficiencyDepreciationFactor = 0.995;
+    let costIncreaseFactor = 1.022;
+    let discountRate = 1.04;
+
+    // Solar installation
+    let installationSizeKw = (panelsCount * panelCapacityWatts) / 1000;
+    let installationCostTotal =
+      installationCostPerWatt * installationSizeKw * 1000;
+
+    // Energy consumption
+    let monthlyKwhEnergyConsumption =
+      monthlyAverageEnergyBill / energyCostPerKwh;
+    let yearlyKwhEnergyConsumption = monthlyKwhEnergyConsumption * 12;
+
+    // Energy produced for installation life span
+    let initialAcKwhPerYear = yearlyEnergyDcKwh * dcToAcDerate;
+    let yearlyProductionAcKwh = Array.from(
+      Array(installationLifeSpan).keys()
+    ).map(year => initialAcKwhPerYear * efficiencyDepreciationFactor ** year);
+
+    // Cost with solar for installation life span
+    let yearlyUtilityBillEstimates = yearlyProductionAcKwh.map(
+      (yearlyKwhEnergyProduced, year) => {
+        const billEnergyKwh =
+          yearlyKwhEnergyConsumption - yearlyKwhEnergyProduced;
+        const billEstimate =
+          (billEnergyKwh * energyCostPerKwh * costIncreaseFactor ** year) /
+          discountRate ** year;
+        return Math.max(billEstimate, 0); // bill cannot be negative
+      }
+    );
+    let remainingLifetimeUtilityBill = yearlyUtilityBillEstimates.reduce(
+      (x, y) => x + y,
+      0
+    );
+    let totalCostWithSolar =
+      installationCostTotal + remainingLifetimeUtilityBill - solarIncentives;
+
+    // Cost without solar for installation life span
+    let yearlyCostWithoutSolar = Array.from(
+      Array(installationLifeSpan).keys()
+    ).map(
+      year =>
+        (monthlyAverageEnergyBill * 12 * costIncreaseFactor ** year) /
+        discountRate ** year
+    );
+    let totalCostWithoutSolar = yearlyCostWithoutSolar.reduce(
+      (x, y) => x + y,
+      0
+    );
+
+    // Savings with solar for installation life span
+    let savings = totalCostWithoutSolar - totalCostWithSolar;
+
+    let energyCovered;
+    energyCovered = yearlyProductionAcKwh[0] / yearlyKwhEnergyConsumption;
+
+    let breakEvenYear = -1;
+    GoogleCharts.load(
+      () => {
+        if (!costChart) {
+          return;
+        }
+        const year = new Date().getFullYear();
+
+        let costWithSolar = 0;
+        const cumulativeCostsWithSolar = yearlyUtilityBillEstimates.map(
+          (billEstimate, i) =>
+            (costWithSolar +=
+              i == 0
+                ? billEstimate + installationCostTotal - solarIncentives
+                : billEstimate)
+        );
+        let costWithoutSolar = 0;
+        const cumulativeCostsWithoutSolar = yearlyCostWithoutSolar.map(
+          cost => (costWithoutSolar += cost)
+        );
+        breakEvenYear = cumulativeCostsWithSolar.findIndex(
+          (costWithSolar, i) => costWithSolar <= cumulativeCostsWithoutSolar[i]
+        );
+
+        const data = google.visualization.arrayToDataTable([
+          ['Year', 'Solar', 'No solar'],
+          [year.toString(), 0, 0],
+          ...cumulativeCostsWithSolar.map((_, i) => [
+            String(year + i + 1),
+            cumulativeCostsWithSolar[i],
+            cumulativeCostsWithoutSolar[i]
+          ])
+        ]);
+
+        const chart = new google.visualization.LineChart(costChart);
+        const options = google.visualization.LineChart.convertOptions({
+          title: `Cost analysis for ${installationLifeSpan} years`,
+          width: 350,
+          height: 200
+        });
+        chart.draw(data, options);
+      },
+      { packages: ['line'] }
+    );
+
+    function updateConfig() {
+      monthlyKwhEnergyConsumption =
+        monthlyAverageEnergyBillInput / energyCostPerKwhInput;
+      yearlyKwhEnergyConsumption = monthlyKwhEnergyConsumption * 12;
+      panelCapacityRatio = panelCapacityWattsInput / defaultPanelCapacityWatts;
+      configId = findSolarConfig(
+        solarPanelConfigs,
+        yearlyKwhEnergyConsumption,
+        panelCapacityRatio,
+        dcToAcDerateInput
+      );
+    }
+  }
+
+  if (geometryLibrary && map) {
+    BuildingInsightsSection();
+  }
+
+  if (buildingInsights && configId !== undefined) {
+    // DataLayersSection();
+    SolarPotentialSection();
+  }
+}
+
+function onSearchChange() {
+  $(accordionsID).html(spinnerHtml);
+  let initialValue = geoLocation;
+  let place;
   const searchBarElement = document.querySelector('#search-input');
 
   // Await for the component's update completion
@@ -68,9 +602,13 @@ function onSearchChange() {
 
   // Add listener for place_changed event
   autocomplete.addListener('place_changed', async () => {
-    const place = autocomplete.getPlace();
-
-    // Check if place geometry or location is not available
+    // $(accordionsID).html(spinnerHtml);
+    place = autocomplete.getPlace();
+    if (geoLocation) {
+      $(accordionsID).html('');
+      createAccordionSections();
+    }
+    // Check if place geometry or geoLocation is not available
     if (!place.geometry || !place.geometry.location) {
       searchBarElement.value = '';
       return;
@@ -95,7 +633,38 @@ function onSearchChange() {
       searchBarElement.value = place.formatted_address;
     }
   });
+  if (geoLocation) {
+    $(accordionsID).html('');
+    createAccordionSections();
+  }
 }
+
+$('.accordion').on('show.bs.collapse', function (e) {
+  switch (e.target.id) {
+    case 'flush-collapseOne':
+      isBuildingAccordionOpen = true;
+      break;
+    case 'flush-collapseThree':
+      isSolarAccordionOpen = true;
+      break;
+    default:
+      break;
+  }
+  // Additional actions you want to perform when an accordion item is shown
+});
+
+$('.accordion').on('hide.bs.collapse', function (e) {
+  switch (e.target.id) {
+    case 'flush-collapseOne':
+      isBuildingAccordionOpen = false;
+      break;
+    case 'flush-collapseThree':
+      isSolarAccordionOpen = false;
+      break;
+    default:
+      break;
+  }
+});
 
 // colors.js
 const binaryPalette = ['212121', 'B3E5FC'];
@@ -211,12 +780,20 @@ function renderRGB(rgb, mask) {
   return canvas;
 }
 
+function rgbToColor({ r, g, b }) {
+  const f = x => {
+    const hex = Math.round(x).toString(16);
+    return hex.length == 1 ? `0${hex}` : hex;
+  };
+  return `#${f(r)}${f(g)}${f(b)}`;
+}
+
 // Solar API
 
-async function findClosestBuilding(location) {
+async function findClosestBuilding(geoLocation) {
   const args = {
-    'location.latitude': location.lat().toFixed(5),
-    'location.longitude': location.lng().toFixed(5)
+    'location.latitude': geoLocation.lat().toFixed(5),
+    'location.longitude': geoLocation.lng().toFixed(5)
   };
   console.log('GET buildingInsights\n', args);
   const params = new URLSearchParams({ ...args, key: googleMapsApiKey });
@@ -233,10 +810,10 @@ async function findClosestBuilding(location) {
   });
 }
 
-async function getDataLayerUrls(location, radiusMeters) {
+async function getDataLayerUrls(geoLocation, radiusMeters) {
   const args = {
-    'location.latitude': location.latitude.toFixed(5),
-    'location.longitude': location.longitude.toFixed(5),
+    'location.latitude': geoLocation.latitude.toFixed(5),
+    'location.longitude': geoLocation.longitude.toFixed(5),
     radius_meters: radiusMeters.toString()
   };
   console.log('GET dataLayers\n', args);

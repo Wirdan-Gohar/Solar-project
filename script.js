@@ -1,10 +1,4 @@
-// $(document).ready(function () {
-//     $('#panel-capacity').on('input change', function () {
-//         $('#panel-capacity-value').text($(this).val() + ' Watts');
-//     });
 
-//     // Add more interactivity as needed
-// });
 let googleMapsApiKey = 'AIzaSyDMPvp62rcoIitOkkSlfIAxZzDUgL6dR84';
 let map;
 let geometryLibrary;
@@ -403,7 +397,7 @@ function createAccordionSections() {
       // Display progress indicator
     }
 
-    function showBuildingInsights() {}
+    function showBuildingInsights() { }
 
     function showExpandable() {
       // Display expandable section

@@ -29,7 +29,9 @@ let defaultPanelCapacity;
 let panelCapacityRatio;
 let energyCovered;
 let yearlyProductionAcKwh;
+let isShowDataLayer = true;
 
+let interval;
 // $('#box2').show();
 const spinnerHtml = `<div class="d-flex justify-content-center"><div class="spinner-border text-primary" role="status">
   <span class="sr-only"></span>
@@ -40,6 +42,10 @@ let isBuildingAccordionOpen = false;
 let isSolarAccordionOpen = false;
 
 document.addEventListener('DOMContentLoaded', async function () {
+  // const defaultPlace = {
+  //   name: 'New Orleans Museum',
+  //   address: 'New Orleans Museum of Art'
+  // };
   const defaultPlace = {
     name: 'Rinconada Library',
     address: '1213 Newell Rd, Palo Alto, CA 94303'
@@ -276,349 +282,383 @@ function generateBuildingInsightsHtml() {
             </div>`;
 }
 
+calculateYearlyKwhEnergyConsumption();
+
+function calculateYearlyKwhEnergyConsumption() {
+  yearlyKwhEnergyConsumption =
+    (monthlyAverageEnergyBillInput / energyCostPerKwhInput) * 12;
+}
+
+solarPanels = [];
+let requestSent = false;
+let requestError;
+let apiResponseDialog;
+
+function BuildingInsightsSection() {
+  function initializeSolarPanels() {
+    solarPanels.map(panel => panel.setMap(null));
+    solarPanels = [];
+  }
+
+  function updateSolarPanels() {
+    solarPanels.map((panel, i) =>
+      panel.setMap(
+        showPanels && panelConfig && i < panelConfig.panelsCount ? map : null
+      )
+    );
+  }
+
+  async function showSolarPotential() {
+    if (requestSent) {
+      return;
+    }
+
+    buildingInsights = undefined;
+    requestError = undefined;
+
+    initializeSolarPanels();
+    function updateFromBuildingSection() {
+      if (configId === undefined && buildingInsights) {
+        defaultPanelCapacity =
+          buildingInsights.solarPotential.panelCapacityWatts;
+        defaultPanelCapacityWatts = defaultPanelCapacity;
+        solarPanelConfigs = buildingInsights.solarPotential.solarPanelConfigs;
+        panelCapacityRatio = panelCapacityWattsInput / defaultPanelCapacity;
+        configId = findSolarConfig(
+          buildingInsights.solarPotential.solarPanelConfigs,
+          yearlyKwhEnergyConsumption,
+          panelCapacityRatio,
+          dcToAcDerateInput
+        );
+      }
+
+      panelConfig = buildingInsights.solarPotential.solarPanelConfigs[configId];
+      solarPotential = buildingInsights.solarPotential;
+      palette = createPalette(panelsPalette).map(rgbToColor);
+      minEnergy = solarPotential.solarPanels.slice(-1)[0].yearlyEnergyDcKwh;
+      maxEnergy = solarPotential.solarPanels[0].yearlyEnergyDcKwh;
+      solarPanels = solarPotential.solarPanels.map(panel => {
+        const [w, h] = [
+          solarPotential.panelWidthMeters / 2,
+          solarPotential.panelHeightMeters / 2
+        ];
+        const points = [
+          { x: +w, y: +h }, // top right
+          { x: +w, y: -h }, // bottom right
+          { x: -w, y: -h }, // bottom left
+          { x: -w, y: +h }, // top left
+          { x: +w, y: +h } // top right (closing the polygon)
+        ];
+        const orientation = panel.orientation == 'PORTRAIT' ? 90 : 0;
+        const azimuth =
+          solarPotential.roofSegmentStats[panel.segmentIndex].azimuthDegrees;
+        const colorIndex = Math.round(
+          normalize(panel.yearlyEnergyDcKwh, maxEnergy, minEnergy) * 255
+        );
+
+        // Compute the coordinates of each point based on the panel's center, width, height, orientation, and azimuth
+        const polygonCoordinates = points.map(({ x, y }) =>
+          geometryLibrary.spherical.computeOffset(
+            {
+              lat: panel.center.latitude,
+              lng: panel.center.longitude
+            },
+            Math.sqrt(x * x + y * y),
+            Math.atan2(y, x) * (180 / Math.PI) + orientation + azimuth
+          )
+        );
+
+        // Create a new google.maps.Polygon instance with computed coordinates and other properties
+        return new google.maps.Polygon({
+          paths: polygonCoordinates,
+          strokeColor: '#B0BEC5',
+          strokeOpacity: 0.9,
+          strokeWeight: 1,
+          fillColor: palette[colorIndex],
+          fillOpacity: 0.9
+        });
+      });
+    }
+    requestSent = true;
+    try {
+      clearInterval(interval);
+      $('.footer').hide();
+      $('#isShowOverlays').prop('checked', true);
+      isShowDataLayer = true;
+      buildingInsights = await findClosestBuilding(geoLocation);
+
+      updateFromBuildingSection(buildingInsights);
+      updateSolarPanels();
+      DataLayerSection(buildingInsights);
+      $('#yearly-energy-accordion').html(
+        `${(
+          (panelConfig?.yearlyEnergyDcKwh || 0 * panelCapacityRatio || 0) / 1000
+        ).toFixed(2)} MWh`
+      );
+
+      $('#panel-count-box').html(
+        showNumber(
+          buildingInsights.solarPotential.solarPanelConfigs[configId]
+            .panelsCount
+        ) + '/ '
+      );
+
+      $('#total-panels').html(showNumber(solarPanels.length));
+
+      $('#yearly-energy,.energy_savings_leaf').html(
+        showNumber((panelConfig?.yearlyEnergyDcKwh ?? 0) * panelCapacityRatio)
+      );
+
+      $('.co2').html(
+        showNumber(buildingInsights.solarPotential.carbonOffsetFactorKgPerMwh) +
+          ' hr'
+      );
+
+      $('.solar_power').html(
+        showNumber(buildingInsights.solarPotential.solarPanels.length) + ' hr'
+      );
+
+      $('.square_foot').html(
+        showNumber(buildingInsights.solarPotential.wholeRoofStats.areaMeters2) +
+          ' hr'
+      );
+
+      $('.wb_sunny').html(
+        showNumber(buildingInsights.solarPotential.maxSunshineHoursPerYear) +
+          ' hr'
+      );
+
+      $('#panels-count-slider,#panels-count-slider-2').attr({
+        max: buildingInsights.solarPotential.solarPanelConfigs.length - 1,
+        min: 0,
+        value: configId
+      });
+
+      $('#panel-count, #panel-count-2').html(
+        `${buildingInsights.solarPotential.solarPanelConfigs[configId].panelsCount} panels`
+      );
+    } catch (e) {
+      toastr.error('No data found for this address');
+      console.log('error: ', e);
+      requestError = e;
+      return;
+    } finally {
+      requestSent = false;
+    }
+  }
+
+  showSolarPotential();
+  $('#panels-count-slider,#panels-count-slider-2').on('input', function (e) {
+    configId = e.target.value ?? 0;
+    showSolarPotential();
+  });
+
+  $('#panel-capacity').on('input', function (e) {
+    const value = e.target.value ?? 0;
+    panelCapacityWattsInput = value;
+    showSolarPotential();
+  });
+  $('#flexSwitchCheckChecked').on('input', function (e) {
+    const value = e.target.checked ?? false;
+    showPanels = value;
+    showSolarPotential();
+  });
+}
+
+function DataLayerSection(_buildingInsights) {
+  let expandedSection = '';
+
+  const dataLayerOptions = {
+    none: 'No layer',
+    mask: 'Roof mask',
+    dsm: 'Digital Surface Model',
+    rgb: 'Aerial image',
+    annualFlux: 'Annual sunshine',
+    monthlyFlux: 'Monthly sunshine',
+    hourlyShade: 'Hourly shade'
+  };
+
+  const monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
+
+  let dataLayersResponse;
+  let requestError;
+  let apiResponseDialog;
+  let layerId = 'monthlyFlux';
+  let layer;
+
+  let playAnimation = true;
+  let tick = 0;
+  let month = 0;
+  let day = 14;
+  let hour = 0;
+
+  let overlays = [];
+  let showRoofOnly = false;
+
+  async function setDataLayer(reset = false) {
+    if (reset) {
+      layerId = 'monthlyFlux';
+      dataLayersResponse = undefined;
+      requestError = undefined;
+      layer = undefined;
+
+      showRoofOnly = ['annualFlux', 'monthlyFlux', 'hourlyShade'].includes(
+        layerId
+      );
+      month = layerId == 'hourlyShade' ? 3 : 0;
+      day = 14;
+      hour = 5;
+      playAnimation = ['monthlyFlux', 'hourlyShade'].includes(layerId);
+    } else {
+      layerId = 'none';
+    }
+    map.setMapTypeId(layerId == 'rgb' ? 'roadmap' : 'satellite');
+    overlays.map(overlay => overlay.setMap(null));
+    if (layerId == 'none') {
+      return;
+    }
+
+    if (!layer) {
+      // console.log('___building insights: ', _buildingInsights.center);
+      const center = _buildingInsights.center;
+      const ne = _buildingInsights.boundingBox.ne;
+      const sw = _buildingInsights.boundingBox.sw;
+      const diameter = geometryLibrary.spherical.computeDistanceBetween(
+        new google.maps.LatLng(ne.latitude, ne.longitude),
+        new google.maps.LatLng(sw.latitude, sw.longitude)
+      );
+      const radius = Math.ceil(diameter / 2);
+      // console.log('----', center, _buildingInsights.boundingBox);
+      try {
+        dataLayersResponse = await getDataLayerUrls(
+          center,
+          radius,
+          googleMapsApiKey
+        );
+        // console.log('dataLayersResponse', dataLayersResponse);
+      } catch (e) {
+        toastr.error('No data found for this address');
+
+        console.log('error', e);
+        requestError = e;
+        return;
+      }
+
+      try {
+        layer = await getLayer(layerId, dataLayersResponse, googleMapsApiKey);
+      } catch (e) {
+        toastr.error('No data found for this address');
+
+        console.log('error getting: ', e);
+        requestError = e;
+        return;
+      }
+    }
+
+    const bounds = layer.bounds;
+    // console.log('Render layer:', {
+    //   layerId: layer.id,
+    //   showRoofOnly: showRoofOnly,
+    //   month: month,
+    //   day: day
+    // });
+    overlays.map(overlay => overlay.setMap(null));
+    overlays = layer.render(showRoofOnly, month, day).map(canvas => {
+      return new google.maps.GroundOverlay(canvas.toDataURL(), bounds);
+    });
+
+    if (!['monthlyFlux', 'hourlyShade'].includes(layer.id)) {
+      overlays[0].setMap(map);
+    }
+  }
+
+  function setOverlayOnMap(show = true) {
+    if (show) {
+      if (layer?.id == 'monthlyFlux') {
+        overlays.map((overlay, i) => overlay.setMap(i == month ? map : null));
+      } else if (layer?.id == 'hourlyShade') {
+        overlays.map((overlay, i) => overlay.setMap(i == hour ? map : null));
+      }
+
+      if (layer?.id == 'monthlyFlux') {
+        if (playAnimation) {
+          month = tick % 12;
+        } else {
+          tick = month;
+        }
+      } else if (layer?.id == 'hourlyShade') {
+        if (playAnimation) {
+          hour = tick % 24;
+        } else {
+          tick = hour;
+        }
+      }
+
+      $('#month-range').val(month);
+      $('#month-name').html(monthNames[month]);
+    }
+  }
+
+  function onSliderChange(event) {
+    const target = event.target;
+    if (layer?.id == 'monthlyFlux') {
+      if (target.valueStart != month) {
+        month = target.valueStart ?? 0;
+      } else if (target.valueEnd != month) {
+        month = target.valueEnd ?? 0;
+      }
+      tick = month;
+    } else if (layer?.id == 'hourlyShade') {
+      if (target.valueStart != hour) {
+        hour = target.valueStart ?? 0;
+      } else if (target.valueEnd != hour) {
+        hour = target.valueEnd ?? 0;
+      }
+      tick = hour;
+    }
+  }
+  if (isShowDataLayer) setDataLayer(true);
+
+  interval = setInterval(() => {
+    if (checkIsShowDataLayer()) {
+      tick++;
+      setOverlayOnMap();
+      $('.footer').show();
+    } else {
+      $('.footer').hide();
+      setDataLayer(false);
+    }
+  }, 1000);
+
+  // setInterval(() => {
+  //   isShowDataLayer = !isShowDataLayer;
+  // }, 8000);
+}
+
+$('#isShowOverlays').on('input', function (e) {
+  isShowDataLayer = e.target.checked;
+});
+
+function checkIsShowDataLayer() {
+  return isShowDataLayer;
+}
+
 function createAccordionSections() {
   const html = generateBuildingInsightsHtml() + generateSolarPotentialHtml();
   $(accordionsID).append(html);
-
-  calculateYearlyKwhEnergyConsumption();
-
-  function calculateYearlyKwhEnergyConsumption() {
-    yearlyKwhEnergyConsumption =
-      (monthlyAverageEnergyBillInput / energyCostPerKwhInput) * 12;
-  }
-
-  solarPanels = [];
-  let requestSent = false;
-  let requestError;
-  let apiResponseDialog;
-
-  function BuildingInsightsSection() {
-    function initializeSolarPanels() {
-      solarPanels.map(panel => panel.setMap(null));
-      solarPanels = [];
-    }
-
-    function updateSolarPanels() {
-      solarPanels.map((panel, i) =>
-        panel.setMap(
-          showPanels && panelConfig && i < panelConfig.panelsCount ? map : null
-        )
-      );
-    }
-
-    async function showSolarPotential() {
-      if (requestSent) {
-        return;
-      }
-
-      buildingInsights = undefined;
-      requestError = undefined;
-
-      initializeSolarPanels();
-      function updateFromBuildingSection() {
-        if (configId === undefined && buildingInsights) {
-          defaultPanelCapacity =
-            buildingInsights.solarPotential.panelCapacityWatts;
-          defaultPanelCapacityWatts = defaultPanelCapacity;
-          solarPanelConfigs = buildingInsights.solarPotential.solarPanelConfigs;
-          panelCapacityRatio = panelCapacityWattsInput / defaultPanelCapacity;
-          configId = findSolarConfig(
-            buildingInsights.solarPotential.solarPanelConfigs,
-            yearlyKwhEnergyConsumption,
-            panelCapacityRatio,
-            dcToAcDerateInput
-          );
-        }
-
-        panelConfig =
-          buildingInsights.solarPotential.solarPanelConfigs[configId];
-        solarPotential = buildingInsights.solarPotential;
-        palette = createPalette(panelsPalette).map(rgbToColor);
-        minEnergy = solarPotential.solarPanels.slice(-1)[0].yearlyEnergyDcKwh;
-        maxEnergy = solarPotential.solarPanels[0].yearlyEnergyDcKwh;
-        solarPanels = solarPotential.solarPanels.map(panel => {
-          const [w, h] = [
-            solarPotential.panelWidthMeters / 2,
-            solarPotential.panelHeightMeters / 2
-          ];
-          const points = [
-            { x: +w, y: +h }, // top right
-            { x: +w, y: -h }, // bottom right
-            { x: -w, y: -h }, // bottom left
-            { x: -w, y: +h }, // top left
-            { x: +w, y: +h } // top right (closing the polygon)
-          ];
-          const orientation = panel.orientation == 'PORTRAIT' ? 90 : 0;
-          const azimuth =
-            solarPotential.roofSegmentStats[panel.segmentIndex].azimuthDegrees;
-          const colorIndex = Math.round(
-            normalize(panel.yearlyEnergyDcKwh, maxEnergy, minEnergy) * 255
-          );
-
-          // Compute the coordinates of each point based on the panel's center, width, height, orientation, and azimuth
-          const polygonCoordinates = points.map(({ x, y }) =>
-            geometryLibrary.spherical.computeOffset(
-              {
-                lat: panel.center.latitude,
-                lng: panel.center.longitude
-              },
-              Math.sqrt(x * x + y * y),
-              Math.atan2(y, x) * (180 / Math.PI) + orientation + azimuth
-            )
-          );
-
-          // Create a new google.maps.Polygon instance with computed coordinates and other properties
-          return new google.maps.Polygon({
-            paths: polygonCoordinates,
-            strokeColor: '#B0BEC5',
-            strokeOpacity: 0.9,
-            strokeWeight: 1,
-            fillColor: palette[colorIndex],
-            fillOpacity: 0.9
-          });
-        });
-      }
-      requestSent = true;
-      try {
-        buildingInsights = await findClosestBuilding(geoLocation);
-        DataLayerSection();
-
-        updateFromBuildingSection(buildingInsights);
-        updateSolarPanels();
-
-        $('#yearly-energy-accordion').html(
-          `${(
-            (panelConfig?.yearlyEnergyDcKwh || 0 * panelCapacityRatio || 0) /
-            1000
-          ).toFixed(2)} MWh`
-        );
-
-        $('#panel-count-box').html(
-          showNumber(
-            buildingInsights.solarPotential.solarPanelConfigs[configId]
-              .panelsCount
-          ) + '/ '
-        );
-
-        $('#total-panels').html(showNumber(solarPanels.length));
-
-        $('#yearly-energy,.energy_savings_leaf').html(
-          showNumber((panelConfig?.yearlyEnergyDcKwh ?? 0) * panelCapacityRatio)
-        );
-
-        $('.co2').html(
-          showNumber(
-            buildingInsights.solarPotential.carbonOffsetFactorKgPerMwh
-          ) + ' hr'
-        );
-
-        $('.solar_power').html(
-          showNumber(buildingInsights.solarPotential.solarPanels.length) + ' hr'
-        );
-
-        $('.square_foot').html(
-          showNumber(
-            buildingInsights.solarPotential.wholeRoofStats.areaMeters2
-          ) + ' hr'
-        );
-
-        $('.wb_sunny').html(
-          showNumber(buildingInsights.solarPotential.maxSunshineHoursPerYear) +
-            ' hr'
-        );
-
-        $('#panels-count-slider,#panels-count-slider-2').attr({
-          max: buildingInsights.solarPotential.solarPanelConfigs.length - 1,
-          min: 0,
-          value: configId
-        });
-
-        $('#panel-count, #panel-count-2').html(
-          `${buildingInsights.solarPotential.solarPanelConfigs[configId].panelsCount} panels`
-        );
-      } catch (e) {
-        console.log('error: ', e);
-        requestError = e;
-        return;
-      } finally {
-        requestSent = false;
-      }
-    }
-
-    showSolarPotential();
-    $('#panels-count-slider,#panels-count-slider-2').on('input', function (e) {
-      configId = e.target.value ?? 0;
-      showSolarPotential();
-    });
-
-    $('#panel-capacity').on('input', function (e) {
-      const value = e.target.value ?? 0;
-      panelCapacityWattsInput = value;
-      showSolarPotential();
-    });
-    $('#flexSwitchCheckChecked').on('input', function (e) {
-      const value = e.target.checked ?? false;
-      showPanels = value;
-      showSolarPotential();
-    });
-  }
-
-  function DataLayerSection() {
-    let expandedSection = '';
-
-    const dataLayerOptions = {
-      none: 'No layer',
-      mask: 'Roof mask',
-      dsm: 'Digital Surface Model',
-      rgb: 'Aerial image',
-      annualFlux: 'Annual sunshine',
-      monthlyFlux: 'Monthly sunshine',
-      hourlyShade: 'Hourly shade'
-    };
-
-    const monthNames = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec'
-    ];
-
-    let dataLayersResponse;
-    let requestError;
-    let apiResponseDialog;
-    let layerId = 'monthlyFlux';
-    let layer;
-
-    let playAnimation = true;
-    let tick = 0;
-    let month = 0;
-    let day = 14;
-    let hour = 0;
-
-    let overlays = [];
-    let showRoofOnly = false;
-
-    async function showDataLayer(reset = false) {
-      if (reset) {
-        dataLayersResponse = undefined;
-        requestError = undefined;
-        layer = undefined;
-
-        showRoofOnly = ['annualFlux', 'monthlyFlux', 'hourlyShade'].includes(
-          layerId
-        );
-        map.setMapTypeId(layerId == 'rgb' ? 'roadmap' : 'satellite');
-        overlays.map(overlay => overlay.setMap(null));
-        month = layerId == 'hourlyShade' ? 3 : 0;
-        day = 14;
-        hour = 5;
-        playAnimation = ['monthlyFlux', 'hourlyShade'].includes(layerId);
-      }
-      if (layerId == 'none') {
-        return;
-      }
-
-      if (!layer) {
-        const center = buildingInsights.center;
-        const ne = buildingInsights.boundingBox.ne;
-        const sw = buildingInsights.boundingBox.sw;
-        const diameter = geometryLibrary.spherical.computeDistanceBetween(
-          new google.maps.LatLng(ne.latitude, ne.longitude),
-          new google.maps.LatLng(sw.latitude, sw.longitude)
-        );
-        const radius = Math.ceil(diameter / 2);
-        try {
-          dataLayersResponse = await getDataLayerUrls(
-            center,
-            radius,
-            googleMapsApiKey
-          );
-        } catch (e) {
-          requestError = e;
-          return;
-        }
-
-        try {
-          layer = await getLayer(layerId, dataLayersResponse, googleMapsApiKey);
-        } catch (e) {
-          console.log('error getting: ', e);
-          requestError = e;
-          return;
-        }
-      }
-
-      const bounds = layer.bounds;
-      console.log('Render layer:', {
-        layerId: layer.id,
-        showRoofOnly: showRoofOnly,
-        month: month,
-        day: day
-      });
-      overlays.map(overlay => overlay.setMap(null));
-      overlays = layer
-        .render(showRoofOnly, month, day)
-        .map(
-          canvas => new google.maps.GroundOverlay(canvas.toDataURL(), bounds)
-        );
-
-      if (!['monthlyFlux', 'hourlyShade'].includes(layer.id)) {
-        overlays[0].setMap(map);
-      }
-    }
-
-    if (layer?.id == 'monthlyFlux') {
-      overlays.map((overlay, i) => overlay.setMap(i == month ? map : null));
-    } else if (layer?.id == 'hourlyShade') {
-      overlays.map((overlay, i) => overlay.setMap(i == hour ? map : null));
-    }
-
-    function onSliderChange(event) {
-      const target = event.target;
-      if (layer?.id == 'monthlyFlux') {
-        if (target.valueStart != month) {
-          month = target.valueStart ?? 0;
-        } else if (target.valueEnd != month) {
-          month = target.valueEnd ?? 0;
-        }
-        tick = month;
-      } else if (layer?.id == 'hourlyShade') {
-        if (target.valueStart != hour) {
-          hour = target.valueStart ?? 0;
-        } else if (target.valueEnd != hour) {
-          hour = target.valueEnd ?? 0;
-        }
-        tick = hour;
-      }
-    }
-
-    if (layer?.id == 'monthlyFlux') {
-      if (playAnimation) {
-        month = tick % 12;
-      } else {
-        tick = month;
-      }
-    } else if (layer?.id == 'hourlyShade') {
-      if (playAnimation) {
-        hour = tick % 24;
-      } else {
-        tick = hour;
-      }
-    }
-
-    showDataLayer(true);
-
-    setInterval(() => {
-      tick++;
-    }, 1000);
-  }
 
   let monthlyKwhEnergyConsumption;
   function CalculateSolarPotential() {
@@ -747,7 +787,6 @@ function createAccordionSections() {
 
   if (geometryLibrary && map) {
     BuildingInsightsSection();
-    // DataLayerSection();
   }
   function updateConfig() {
     monthlyKwhEnergyConsumption =
@@ -818,6 +857,7 @@ function createAccordionSections() {
     ];
   }
   setTimeout(() => {
+    // DataLayerSection();
     CalculateSolarPotential();
     updateConfig();
   }, 3000);
@@ -912,10 +952,6 @@ function onSearchChange() {
   autocomplete.addListener('place_changed', async () => {
     // $(accordionsID).html(spinnerHtml);
     place = autocomplete.getPlace();
-    if (geoLocation) {
-      $(accordionsID).html('');
-      createAccordionSections();
-    }
     // Check if place geometry or geoLocation is not available
     if (!place.geometry || !place.geometry.location) {
       searchBarElement.value = '';
@@ -933,7 +969,13 @@ function onSearchChange() {
 
     // Update location value
     geoLocation = place.geometry.location;
-
+    if (geoLocation) {
+      $(accordionsID).html('');
+      createAccordionSections();
+    }
+    if (geometryLibrary && map) {
+      BuildingInsightsSection();
+    }
     // Update text field value with place name or formatted address
     if (place.name) {
       searchBarElement.value = place.name;
@@ -1106,17 +1148,18 @@ async function findClosestBuilding(geoLocation) {
     'location.latitude': geoLocation.lat().toFixed(5),
     'location.longitude': geoLocation.lng().toFixed(5)
   };
-  console.log('GET buildingInsights\n', args);
+  // console.log('GET buildingInsights\n', args);
   const params = new URLSearchParams({ ...args, key: googleMapsApiKey });
   return fetch(
     `https://solar.googleapis.com/v1/buildingInsights:findClosest?${params}`
   ).then(async response => {
     const content = await response.json();
     if (response.status != 200) {
+      toastr.error('No Data Found for this address');
       console.error('findClosestBuilding\n', content);
       throw content;
     }
-    console.log('buildingInsightsResponse', content);
+    // console.log('buildingInsightsResponse', content);
     return content;
   });
 }
@@ -1127,29 +1170,33 @@ async function getDataLayerUrls(geoLocation, radiusMeters) {
     'location.longitude': geoLocation.longitude.toFixed(5),
     radius_meters: radiusMeters.toString()
   };
-  console.log('GET dataLayers\n', args);
+  // console.log('GET dataLayers\n', args);
   const params = new URLSearchParams({ ...args, key: googleMapsApiKey });
   return fetch(`https://solar.googleapis.com/v1/dataLayers:get?${params}`).then(
     async response => {
       const content = await response.json();
       if (response.status != 200) {
+        toastr.error('No Data Found for this address');
+
         console.error('getDataLayerUrls\n', content);
         throw content;
       }
-      console.log('dataLayersResponse', content);
+      // console.log('dataLayersResponse', content);
       return content;
     }
   );
 }
 
 async function downloadGeoTIFF(url) {
-  console.log(`Downloading data layer: ${url}`);
+  // console.log(`Downloading data layer: ${url}`);
   const solarUrl = url.includes('solar.googleapis.com')
     ? url + `&key=${googleMapsApiKey}`
     : url;
   const response = await fetch(solarUrl);
   if (response.status != 200) {
     const error = await response.json();
+    toastr.error('No Data Found for this address');
+
     console.error(`downloadGeoTIFF failed: ${url}\n`, error);
     throw error;
   }
@@ -1348,6 +1395,8 @@ async function getLayer(layerId, urls) {
   try {
     return get[layerId]();
   } catch (e) {
+    toastr.error('No data found for this address');
+
     console.error(`Error getting layer: ${layerId}\n`, e);
     throw e;
   }
